@@ -1,0 +1,3 @@
+Attendance,Internal_Marks,Assignment_Score,Study_Hours,Predicted_Probability,Risk,Actual_Result
+80,75,78,3,0.9994246965898668,Low Risk,1
+60,45,50,1,6.888037348422023e-05,High Risk,0
