@@ -4,25 +4,35 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Home route
+# --------------------------
+# Homepage route (404 fix)
+# --------------------------
 @app.route("/")
 def home():
     return "Backend is running successfully"
 
-# Prediction API
-@app.route("/predict", methods=["POST"])
+# --------------------------
+# Example predict route
+# --------------------------
+@app.route('/predict', methods=['POST'])
 def predict():
     data = request.get_json()
 
-    hours = int(data["hours"])
-    attendance = int(data["attendance"])
-    previous = int(data["previous"])
+    # Data validation
+    try:
+        hours = int(data.get('hours', 0))
+        attendance = int(data.get('attendance', 0))
+        previous = int(data.get('previous', 0))
+    except:
+        return jsonify({"error": "Invalid input"}), 400
 
-    if hours < 5 or attendance < 60 or previous < 50:
-        risk = "High Risk"
-    elif hours < 10 or attendance < 75:
-        risk = "Medium Risk"
-    else:
-        risk = "Low Risk"
+    # Example prediction logic (replace with your ML model later)
+    # Simple example: prediction = hours + attendance + previous
+    prediction = hours * 0.5 + attendance * 0.3 + previous * 0.2
 
-    return jsonify({"risk": risk})
+    return jsonify({"prediction": round(prediction, 2)})
+
+# -------------------------------------------------
+# Note: Do NOT include app.run() for Render
+# Gunicorn automatically starts the server
+# -------------------------------------------------
