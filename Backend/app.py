@@ -1,16 +1,22 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
 
-app = Flask(__name__, static_folder='../frontend', static_url_path='/')
+app = Flask(__name__)
 CORS(app)
 
-@app.route('/predict', methods=['POST'])
+# Home route
+@app.route("/")
+def home():
+    return "Backend is running successfully"
+
+# Prediction API
+@app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
-    hours = int(data['hours'])
-    attendance = int(data['attendance'])
-    previous = int(data['previous'])
+
+    hours = int(data["hours"])
+    attendance = int(data["attendance"])
+    previous = int(data["previous"])
 
     if hours < 5 or attendance < 60 or previous < 50:
         risk = "High Risk"
@@ -20,12 +26,3 @@ def predict():
         risk = "Low Risk"
 
     return jsonify({"risk": risk})
-
-# Serve frontend files
-@app.route('/', defaults={'path': 'index.html'})
-@app.route('/<path:path>')
-def serve_frontend(path):
-    return send_from_directory(app.static_folder, path)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
